@@ -66,7 +66,6 @@ export class UserService {
         .where('users.email = :email', { email: email });
 
       const user = await query.getOne();
-      console.log('user', user); // Check the user fetched
 
       return user;
     } catch (error) {

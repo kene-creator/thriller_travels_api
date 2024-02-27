@@ -12,15 +12,12 @@ export class TransactionController {
 
   @Post()
   async transferCredits(@Body() transferCreditsDto: TransferCreditsDto) {
-    console.log('transferCreditsDto', transferCreditsDto);
     const { senderId, recipientId, amount } = transferCreditsDto;
 
     const feePercentage = this.configService.get<number>(
       'TRANSACTION_FEE_PERCENTAGE',
     );
     const fee = amount * feePercentage;
-
-    console.log('fee', fee);
 
     return this.transactionService.transferCredits(
       senderId,

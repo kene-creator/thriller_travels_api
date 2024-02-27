@@ -22,13 +22,11 @@ export class TransactionService {
   ): Promise<void> {
     await this.dataSource.transaction(async (manager) => {
       const sender = await this.userService.getUserBalance(senderId);
-      console.log('sender', sender);
       if (sender.balance < amount + fee) {
         throw new Error('Insufficient balance');
       }
 
       const recipient = await this.userService.getUserBalance(recipientId);
-      console.log('recipeint', recipient);
 
       await this.userService.updateUserBalance(
         senderId,
@@ -53,15 +51,13 @@ export class TransactionService {
   async getTransactionHistory(userId: number): Promise<Transaction[]> {
     const history = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.sender', 'sender') // Join user table for sender
-      .leftJoinAndSelect('transaction.recipient', 'recipient') // Join user table for recipient
+      .leftJoinAndSelect('transaction.sender', 'sender')
+      .leftJoinAndSelect('transaction.recipient', 'recipient')
       .where(
         'transaction.senderId = :userId OR transaction.recipientId = :userId',
         { userId },
       )
       .getMany();
-
-    console.log(history);
     return history;
   }
 }
